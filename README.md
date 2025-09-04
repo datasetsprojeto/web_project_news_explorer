@@ -37,31 +37,35 @@ npm ou yarn
 Clone o repositório:
 
 bash
-git clone <url-do-repositorio>
-cd news-explorer-api
+
+git clone 
+<https://github.com/datasetsprojeto/web_project_news_explorer.git>
+
+Entre no diretório: 
+
+bash
+
+cd backend
+
 Instale as dependências:
 
 bash
+
 npm install
+
 Configure as variáveis de ambiente:
 
-Copie o arquivo .env.example para .env
+Preencha as variáveis do arquivo .env com seus valores:
 
-Preencha as variáveis com seus valores:
-
-.env
-NODE_ENV=development
-PORT=3001
-DB_URL=mongodb://localhost:27017/newsdb
-JWT_SECRET=seu-super-segredo-jwt-aqui
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
-Inicie o servidor em modo desenvolvimento:
 
 bash
+
 npm run dev
+
 Para produção:
 
 bash
+
 npm start
 
 ## Autor:
