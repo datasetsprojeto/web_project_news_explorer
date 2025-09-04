@@ -1,10 +1,10 @@
 # web_project_news_explorer - Etapa 1
 
-Descrição:
+## Descrição:
 
 Esta é a primeira etapa do projeto front-end, focada na implementação da marcação JSX e integração com uma API de terceiros. O projeto foi desenvolvido em React e segue as melhores práticas de desenvolvimento front-end.
 
-Funcionalidades Implementadas:
+## Funcionalidades Implementadas:
 
 ✅ Layout responsivo para diferentes resoluções de tela
 
@@ -28,7 +28,7 @@ Funcionalidades Implementadas:
 
 ✅ Tratamento de erros e validações
 
-Tecnologias Utilizadas:
+## Tecnologias Utilizadas:
 
 -React
 
@@ -42,7 +42,7 @@ Tecnologias Utilizadas:
 
 -Create React App
 
-Como Executar o Projeto:
+## Como Executar o Projeto:
 
 
 -Clone o repositório
@@ -71,7 +71,7 @@ bash
 npm run dev
 
 
-Critérios Atendidos:
+## Critérios Atendidos:
 
 -Responsividade em todas as resoluções
 
@@ -97,7 +97,7 @@ Critérios Atendidos:
 
 -Sistema de busca com paginação
 
-Próximas Etapas:
+## Próximas Etapas:
 
 -Implementação de autenticação
 
