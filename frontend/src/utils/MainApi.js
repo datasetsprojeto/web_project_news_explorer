@@ -8,6 +8,14 @@ class Api {
     this.headers = headers;
   }
 
+  _getHeaders(token) {
+    return {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+      ...this.headers,
+    };
+  }
+
   _fetchWithTimeout(url, options, timeout = REQUEST_TIMEOUT) {
     return Promise.race([
       fetch(url, options),
@@ -21,11 +29,14 @@ class Api {
     if (res.ok) {
       return res.json();
     }
-    return Promise.reject(`Request failed with status: ${res.status}`);
+    return Promise.reject(new Error(`Request failed with status: ${res.status}`));
   }
 
-  _request(url, options) {
-    return this._fetchWithTimeout(url, options)
+  _request(url, options, token) {
+    const headers = token ? this._getHeaders(token) : this.headers;
+    const requestOptions = { ...options, headers };
+
+    return this._fetchWithTimeout(url, requestOptions)
       .then(this._processResponse)
       .catch(error => {
         console.error('API request error:', error);
@@ -36,21 +47,13 @@ class Api {
   getCurrentUser(token) {
     return this._request(`${this.baseUrl}/users/me`, {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    }, token);
   }
 
   getArticles(token) {
     return this._request(`${this.baseUrl}/articles`, {
       method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    }, token);
   }
 
   saveArticle(data, searchKeyword, token) {
@@ -67,10 +70,6 @@ class Api {
 
     return this._request(`${this.baseUrl}/articles`, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         keyword,
         title,
@@ -80,17 +79,13 @@ class Api {
         link,
         image,
       }),
-    });
+    }, token);
   }
 
   removeArticle(id, token) {
     return this._request(`${this.baseUrl}/articles/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    }, token);
   }
 }
 

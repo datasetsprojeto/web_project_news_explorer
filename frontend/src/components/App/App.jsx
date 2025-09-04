@@ -21,36 +21,15 @@ import mainApi from "../../utils/MainApi";
 import newsApi from "../../utils/NewsApi";
 import * as auth from "../../utils/auth";
 
-function App() {
-  const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState({});
+// Hook customizado para autenticação
+const useAuth = () => {
   const [token, setToken] = useState(localStorage.getItem("jwt"));
-  const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingSaved, setIsLoadingSaved] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [isNewsCardListOpen, setIsNewsCardListOpen] = useState(false);
-  const [onSavedArticlesPage, setOnSavedArticlesPage] = useState(false);
-  const [isSuccessfulPopupOpen, setIsSuccessfulPopupOpen] = useState(false);
-  const [hasResults, setHasResults] = useState(false);
-  const location = useLocation().pathname.substring(1);
-  const [hasError, setHasError] = useState(false);
-  const [savedArticles, setSavedArticles] = useState([]);
-  const [showCards, setShowCards] = useState([]);
-  const [searchError, setSearchError] = useState('');
-  
-  // Novos estados para erros específicos
-  const [loginError, setLoginError] = useState("");
-  const [registerError, setRegisterError] = useState("");
 
-  // Check token validity on app load
   useEffect(() => {
     const checkTokenValidity = async () => {
       const storedToken = localStorage.getItem("jwt");
+      
       if (storedToken && auth.isTokenExpired(storedToken)) {
         localStorage.removeItem("jwt");
         setToken(null);
@@ -75,21 +54,47 @@ function App() {
     checkTokenValidity();
   }, []);
 
-  // User token check
-  useEffect(() => {
-    if (token) {
-      auth
-        .checkToken(token)
-        .then((res) => {
-          setLoggedIn(true);
-        })
-        .catch((err) => {
-          console.error("Token check error:", err);
-          localStorage.removeItem("jwt");
-          setLoggedIn(false);
-        });
-    }
-  }, [token]);
+  return { token, loggedIn, setToken, setLoggedIn };
+};
+
+// Hook customizado para gerenciamento de modais
+const useModal = () => {
+  const [activeModal, setActiveModal] = useState(null);
+
+  const openModal = (modalName) => setActiveModal(modalName);
+  const closeModals = () => setActiveModal(null);
+
+  return {
+    activeModal,
+    openModal,
+    closeModals,
+    isSignInOpen: activeModal === 'signin',
+    isSignUpOpen: activeModal === 'signup',
+    isSuccessfulPopupOpen: activeModal === 'success'
+  };
+};
+
+function App() {
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [isNewsCardListOpen, setIsNewsCardListOpen] = useState(false);
+  const [onSavedArticlesPage, setOnSavedArticlesPage] = useState(false);
+  const [hasResults, setHasResults] = useState(false);
+  const location = useLocation().pathname.substring(1);
+  const [hasError, setHasError] = useState(false);
+  const [savedArticles, setSavedArticles] = useState([]);
+  const [showCards, setShowCards] = useState([]);
+  const [searchError, setSearchError] = useState('');
+  const [loginError, setLoginError] = useState("");
+  const [registerError, setRegisterError] = useState("");
+
+  const { token, loggedIn, setToken, setLoggedIn } = useAuth();
+  const { activeModal, openModal, closeModals, isSignInOpen, isSignUpOpen, isSuccessfulPopupOpen } = useModal();
 
   // GETting current user and articles if the user logged in
   useEffect(() => {
@@ -119,7 +124,7 @@ function App() {
   useEffect(() => {
     function handleEscapeClose(evt) {
       if (evt.key === "Escape") {
-        closeAllPopups();
+        closeModals();
       }
     }
     document.addEventListener("keydown", handleEscapeClose);
@@ -130,7 +135,6 @@ function App() {
   function handleSaveArticle(data) {
     if (!data) return;
     
-    // Verificação segura para artigos já salvos
     const isAlreadySaved = savedArticles.some(article => 
       article && data && article.title === data.title
     );
@@ -203,36 +207,34 @@ function App() {
     localStorage.removeItem("jwt");
     setToken(null);
     navigate("/");
+    closeModals();
   }
 
   function handleLogin() {
     setLoginError("");
     setLoggedIn(true);
-    setIsSignInOpen(false);
+    closeModals();
   }
 
   function handleRegister() {
     setRegisterError("");
-    setIsSignUpOpen(false);
-    setIsSuccessfulPopupOpen(true);
+    closeModals();
+    openModal('success');
   }
 
   function handleSignInClick() {
     setLoginError("");
-    setIsSignInOpen(true);
-    setIsSignUpOpen(false);
-    setIsSuccessfulPopupOpen(false);
+    openModal('signin');
   }
 
   function handleSignUpClick() {
     setRegisterError("");
-    setIsSignUpOpen(true);
-    setIsSignInOpen(false);
+    openModal('signup');
   }
 
   const handleRegisterSubmit = async (email, password, name) => {
     setIsLoading(true);
-    setRegisterError(""); // Reset error state
+    setRegisterError("");
     
     try {
       await auth.register(email, password, name);
@@ -241,7 +243,6 @@ function App() {
     } catch (err) {
       console.error('Registration error:', err.message);
       
-      // Diferencie entre conflito de email e outros erros
       if (err.message.includes('409') || err.message.includes('already exists')) {
         setRegisterError('Este email já está em uso. Tente fazer login.');
       } else {
@@ -254,7 +255,7 @@ function App() {
 
   const handleLoginSubmit = async (email, password) => {
     setIsLoading(true);
-    setLoginError(""); // Reset error state
+    setLoginError("");
     
     try {
       await auth.login(email, password);
@@ -263,7 +264,6 @@ function App() {
     } catch (err) {
       console.error('Login error:', err.message);
       
-      // Diferencie entre credenciais inválidas e outros erros
       if (err.message.includes('401') || err.message.includes('Invalid')) {
         setLoginError('Email ou senha incorretos.');
       } else {
@@ -273,14 +273,6 @@ function App() {
       setIsLoading(false);
     }
   };
-
-  function closeAllPopups() {
-    setIsSignInOpen(false);
-    setIsSignUpOpen(false);
-    setIsSuccessfulPopupOpen(false);
-    setLoginError("");
-    setRegisterError("");
-  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -349,21 +341,21 @@ function App() {
         </Routes>
         <SignIn
           isOpen={isSignInOpen}
-          onClose={closeAllPopups}
+          onClose={closeModals}
           onSignUpClick={handleSignUpClick}
           onLoginSubmit={handleLoginSubmit}
           hasError={loginError}
         />
         <Register
           isOpen={isSignUpOpen}
-          onClose={closeAllPopups}
+          onClose={closeModals}
           onSignInClick={handleSignInClick}
           onRegisterSubmit={handleRegisterSubmit}
           hasError={registerError}
         />
         <SuccessfulPopup
           isOpen={isSuccessfulPopupOpen}
-          onClose={closeAllPopups}
+          onClose={closeModals}
           onSignInClick={handleSignInClick}
           isRegistered={isRegistered}
         />

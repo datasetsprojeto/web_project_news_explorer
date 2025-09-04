@@ -7,11 +7,10 @@ const useFormValidation = () => {
 
   const handleChange = (event) => {
     const { target } = event;
-    const { name } = target;
-    const { value } = target;
+    const { name, value } = target;
 
-    setValues({ ...values, [name]: value });
-    setErrors({ ...errors, [name]: target.validationMessage });
+    setValues((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: target.validationMessage }));
     setIsValid(target.closest("form").checkValidity());
   };
 
