@@ -1,0 +1,46 @@
+.not-found {
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+}
+
+.not-found__overlay {
+  max-width: 356px;
+  width: 24.72%;
+  margin: 80px auto;
+  text-align: center;
+}
+
+.not-found__image {
+max-width: 82.5px;
+width: 100%;
+}
+
+.not-found__title {
+  font-family: "Roboto Slab", serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 30px;
+  margin: 28px 0 16px;
+}
+
+.not-found__description {
+  color: #b6bcbf;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  margin: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .not-found__overlay {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .not-found__overlay {
+    width: 90%;
+  }
+}
