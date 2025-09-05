@@ -14,7 +14,7 @@ if (!API_KEY) {
 const PROXY_URL = "https://nomoreparties.co/news/v2/everything";
 const NUMBER_CARDS = 3;
 const NUMBER_ARTICLES = 100;
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api.news-explorer.strangled.net";
 
 export {
   API_KEY,
