@@ -16,7 +16,6 @@ function processResponse(res) {
     return res.json();
   } else {
     return res.json().then(errorData => {
-      // Use a mensagem específica do backend se disponível
       const errorMessage = errorData.message || `Request failed with status: ${res.status}`;
       throw new Error(errorMessage);
     }).catch(() => {
@@ -81,12 +80,11 @@ export function checkToken(token) {
     });
 }
 
-// Check if token is expired
 export function isTokenExpired(token) {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload.exp * 1000 < Date.now();
-  } catch (error) {
+  } catch { 
     return true;
   }
 }

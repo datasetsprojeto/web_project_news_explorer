@@ -8,14 +8,6 @@ class Api {
     this.headers = headers;
   }
 
-  _getHeaders(token) {
-    return {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-      ...this.headers,
-    };
-  }
-
   _fetchWithTimeout(url, options, timeout = REQUEST_TIMEOUT) {
     return Promise.race([
       fetch(url, options),
@@ -29,14 +21,16 @@ class Api {
     if (res.ok) {
       return res.json();
     }
+    
+    if (res.status === 401) {
+      return Promise.reject(new Error('Authentication failed: Invalid or expired token'));
+    }
+    
     return Promise.reject(new Error(`Request failed with status: ${res.status}`));
   }
 
-  _request(url, options, token) {
-    const headers = token ? this._getHeaders(token) : this.headers;
-    const requestOptions = { ...options, headers };
-
-    return this._fetchWithTimeout(url, requestOptions)
+  _request(url, options) {
+    return this._fetchWithTimeout(url, options)
       .then(this._processResponse)
       .catch(error => {
         console.error('API request error:', error);
@@ -47,45 +41,62 @@ class Api {
   getCurrentUser(token) {
     return this._request(`${this.baseUrl}/users/me`, {
       method: "GET",
-    }, token);
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   getArticles(token) {
     return this._request(`${this.baseUrl}/articles`, {
       method: "GET",
-    }, token);
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
   }
 
   saveArticle(data, searchKeyword, token) {
     const {
       title,
-      description: text,
-      publishedAt: date,
-      url: link,
-      urlToImage: image,
+      description: text = data.text,
+      publishedAt: date = data.date,
+      url: link = data.link,
+      urlToImage: image = data.image,
+      source
     } = data;
     
-    const source = data.source.name;
-    const keyword = searchKeyword.charAt(0).toUpperCase() + searchKeyword.slice(1);
+    const sourceName = typeof source === 'object' ? source?.name || 'Unknown source' : source || 'Unknown source';
+    const keyword = searchKeyword;
 
     return this._request(`${this.baseUrl}/articles`, {
       method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         keyword,
         title,
         text,
         date,
-        source,
+        source: sourceName, 
         link,
         image,
       }),
-    }, token);
+    });
   }
 
   removeArticle(id, token) {
     return this._request(`${this.baseUrl}/articles/${id}`, {
       method: "DELETE",
-    }, token);
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
 

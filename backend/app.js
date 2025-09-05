@@ -10,7 +10,9 @@ const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3001, NODE_ENV, DB_URL, JWT_SECRET } = process.env;
+const {
+  PORT = 3001, NODE_ENV, DB_URL, JWT_SECRET,
+} = process.env;
 
 if (!JWT_SECRET && NODE_ENV === 'production') {
   console.error('JWT_SECRET is required in production');
@@ -25,16 +27,16 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"]
-    }
-  }
+      scriptSrc: ["'self'"],
+    },
+  },
 }));
 
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: 'Too many requests from this IP'
+  message: 'Too many requests from this IP',
 });
 
 // Auth rate limiting
@@ -42,7 +44,7 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
   message: 'Too many login attempts, please try again later',
-  skip: (req) => req.method === 'OPTIONS'
+  skip: (req) => req.method === 'OPTIONS',
 });
 
 app.use(limiter);
@@ -52,14 +54,14 @@ app.use('/signup', authLimiter);
 // CORS
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3000',
-  'http://localhost:5173'
+  'http://localhost:5173',
 ];
 
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
 }));
 
 // Handle preflight requests

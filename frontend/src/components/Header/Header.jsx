@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect, createRef, useCallback } from "react";
 import { NavLink } from "react-router-dom";
 import "./Header.css";
 import MobileNavigationOverlay from "../MobileNavigationOverlay/MobileNavigationOverlay";
@@ -60,16 +60,16 @@ const Header = ({
     }
   }, [mobileWidth, onSavedArticlesPage]);
 
-  useEffect((evt) => {
-    window.addEventListener("click", handleCloseFromOverlay);
-    return () => window.removeEventListener("click", handleCloseFromOverlay);
-  });
-
-  function handleCloseFromOverlay(evt) {
+  const handleCloseFromOverlay = useCallback((evt) => {
     if (overlayRef.current && !overlayRef.current.contains(evt.target)) {
       setIsMenuOpen(false);
     }
-  }
+  }, [overlayRef]);
+
+  useEffect(() => {
+    window.addEventListener("click", handleCloseFromOverlay);
+    return () => window.removeEventListener("click", handleCloseFromOverlay);
+  }, [handleCloseFromOverlay]); // Added handleCloseFromOverlay to dependencies
 
   useEffect(() => {
     const handleCloseByEscape = (evt) => {

@@ -9,24 +9,24 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: (email) => validator.isEmail(email),
-      message: 'Invalid email format'
-    }
+      message: 'Invalid email format',
+    },
   },
   password: {
     type: String,
     required: true,
     select: false,
-    minlength: 8
+    minlength: 8,
   },
   name: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
@@ -38,22 +38,20 @@ userSchema.statics.findUserByCredentials = function (email, password) {
           if (!matched) {
             return Promise.reject(new Error('Incorrect email or password'));
           }
-
           return user;
         });
     });
 };
 
-// Hash password before saving
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function preSave(next) {
   if (!this.isModified('password')) return next();
-  
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
+    return next();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 

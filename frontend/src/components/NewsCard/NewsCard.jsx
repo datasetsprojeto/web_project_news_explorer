@@ -12,20 +12,25 @@ const NewsCard = ({
 }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [articleId, setArticleId] = useState(null);
+  const [showSaveTooltip, setShowSaveTooltip] = useState(false);
+  const [showRemoveTooltip, setShowRemoveTooltip] = useState(false);
 
   // Check if current card is already saved
   useEffect(() => {
     if (!data) return;
     
-    const found = savedArticles.some(
+    // More reliable article matching
+    const foundArticle = savedArticles.find(
       (article) => 
-        article && data && (
-          article.title === data.title || 
-          article.link === data.url ||
-          article.url === data.url
-        )
+        article && data && 
+        (article.link === data.url || article.link === data.link)
     );
-    setIsSaved(found);
+    
+    setIsSaved(!!foundArticle);
+    if (foundArticle) {
+      setArticleId(foundArticle._id);
+    }
   }, [data, savedArticles]);
 
   const handleSaveToggle = () => {
@@ -36,12 +41,14 @@ const NewsCard = ({
       return;
     }
 
-    if (isSaved) {
+    if (isSaved && articleId) {
       onRemoveArticleClick(data);
+      setIsSaved(false);
+      setArticleId(null);
     } else {
       onSaveArticleClick(data);
+      setIsSaved(true);
     }
-    setIsSaved(!isSaved);
   };
 
   const handleImageError = () => {
@@ -49,20 +56,20 @@ const NewsCard = ({
   };
 
   const convertDate = (dateString) => {
-    if (!dateString) return '';
-    
-    const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+  if (!dateString) return '';
+  
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
-    try {
-      const date = new Date(dateString);
-      return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-    } catch (error) {
-      return '';
-    }
-  };
+  try {
+    const date = new Date(dateString);
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+  } catch { 
+    return '';
+  }
+};
 
   // Return null if data is missing
   if (!data) return null;
@@ -106,6 +113,21 @@ const NewsCard = ({
             : handleSaveToggle
           }
           aria-label={onSavedArticlesPage ? "Remove article" : "Save article"}
+          onMouseEnter={() => {
+            if (onSavedArticlesPage) {
+              setShowRemoveTooltip(true);
+            } else if (!loggedIn) {
+              setShowSaveTooltip(true);
+            } else if (loggedIn && !isSaved) {
+              setShowSaveTooltip(true);
+            } else if (loggedIn && isSaved) {
+              setShowRemoveTooltip(true);
+            }
+          }}
+          onMouseLeave={() => {
+            setShowSaveTooltip(false);
+            setShowRemoveTooltip(false);
+          }}
         >
           {onSavedArticlesPage ? (
             <span className="news-card__button-icon"></span>
@@ -116,10 +138,24 @@ const NewsCard = ({
           )}
         </button>
 
-        {/* Tooltip */}
-        {!onSavedArticlesPage && !loggedIn && (
+        {/* Tooltip for save button when not logged in */}
+        {showSaveTooltip && !loggedIn && !onSavedArticlesPage && (
           <div className="news-card__tag news-card__tag_type_tooltip">
             Sign in to save articles
+          </div>
+        )}
+
+        {/* Tooltip for save button when logged in and article not saved */}
+        {showSaveTooltip && loggedIn && !isSaved && !onSavedArticlesPage && (
+          <div className="news-card__tag news-card__tag_type_tooltip">
+            Save article
+          </div>
+        )}
+
+        {/* Tooltip for remove button (saved articles page or saved state) */}
+        {showRemoveTooltip && (onSavedArticlesPage || (loggedIn && isSaved)) && (
+          <div className="news-card__tag news-card__tag_type_tooltip">
+            Remove from saved
           </div>
         )}
         

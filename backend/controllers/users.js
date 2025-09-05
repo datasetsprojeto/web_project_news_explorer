@@ -10,15 +10,13 @@ const NotFoundError = require('../errors/NotFoundError');
 const createUser = (req, res, next) => {
   const { email, password, name } = req.body;
 
-  // Validação básica adicional
   if (!email || !password || !name) {
     return next(new BadRequestError('Email, password and name are required'));
   }
 
-  // Removido o hash manual - deixe o modelo fazer isso
-  User.create({
+  return User.create({
     email,
-    password, // O modelo fará o hash automaticamente
+    password,
     name,
   })
     .then((user) => {
@@ -42,7 +40,7 @@ const login = (req, res, next) => {
 
   console.log('Login attempt for:', email);
 
-  User.findOne({ email }).select('+password')
+  return User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         console.log('User not found:', email);
@@ -68,16 +66,14 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-const getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('User not found');
-      }
-      res.send(user);
-    })
-    .catch(next);
-};
+const getCurrentUser = (req, res, next) => User.findById(req.user._id)
+  .then((user) => {
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+    res.send(user);
+  })
+  .catch(next);
 
 module.exports = {
   createUser,
