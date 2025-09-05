@@ -269,10 +269,10 @@ Hooks customizados com prefixo "use".
 
 🌐 Deploy
 Front-end
-O front-end está implantado e acessível em: [URL de produção do front-end]
+O front-end está implantado e acessível em: [http://news-explorer-full.strangled.net]
 
 Back-end
-O back-end está implantado e acessível em: [URL de produção do back-end]
+O back-end está implantado e acessível em: [http://api.news-explorer-full.strangled.net)]
 
 ## 📝 Próximas Melhorias
 Testes unitários e de integração.
