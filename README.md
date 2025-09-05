@@ -1,151 +1,287 @@
-web_project_news_explorer - Etapa 2 (Back-End)
+# web_project_news_explorer (Aplicação Full Stack)
 
-## Descrição:
+## 📋 Descrição do Projeto:
 
-Esta é a segunda etapa do projeto full-stack, focada na implementação do back-end com Node.js e Express. O projeto inclui uma API RESTful com autenticação JWT, conexão com banco de dados MongoDB e validação de dados.
+O News Explorer é uma aplicação full-stack que permite aos usuários buscar notícias através de uma API externa, salvar artigos e acessá-los posteriormente. O projeto foi desenvolvido em três etapas, cada uma com foco em uma parte específica do desenvolvimento.
 
-##Funcionalidades Implementadas:
+## 🚀 Funcionalidades Gerais:
 
-✅ API com endpoints para registro e login de usuários
+Busca de Notícias: Integração com API externa para pesquisa e exibição de notícias.
 
-✅ Autenticação JWT com proteção de rotas
+Design Responsivo: Adaptado para diferentes resoluções de tela (a partir de 320px).
 
-✅ CRUD completo para artigos salvos
+Autenticação de Usuários: Registro e login com validação de dados.
 
-✅ Validação de dados com Joi/Celebrate
+Salvar Artigos: Usuários autenticados podem salvar artigos em seu perfil.
 
-✅ Criptografia de senhas com bcrypt
+Página de Artigos Salvos: Acesso aos artigos salvos, com possibilidade de exclusão.
 
-✅ Tratamento centralizado de erros
+Componentes Modais: Janelas pop-up funcionais para interações do usuário.
 
-✅ Logs de requisições e erros
+Carregamento Dinâmico: Exibição de 3 cards por vez com botão "Mostrar mais".
 
-✅ Configuração de variáveis de ambiente
+Validação de Formulários: Verificação client-side e server-side dos campos de entrada.
 
-✅ Conexão segura com MongoDB
+## 🛠️ Tecnologias Utilizadas: 
 
-✅ Deploy em produção com HTTPS
+### Front-end:
 
-✅ Rate limiting para segurança
+React (CRA - Create React App)
 
-✅ Configuração ESLint sem erros
+CSS3 com Flexbox/Grid
 
-## Tecnologias Utilizadas:
+BEM (Metodologia de nomenclatura CSS)
+
+HTML5 Semântico
+
+JavaScript ES6+
+
+Fetch API para requisições HTTP
+
+React Router para navegação
+
+Context API para gerenciamento de estado global
+
+### Back-end:
 
 Node.js
 
 Express.js
 
-MongoDB/Mongoose
+MongoDB
 
-JWT para autenticação
+Mongoose
 
-bcryptjs para criptografia
+JWT (JSON Web Tokens) para autenticação
 
-Celebrate/Joi para validação
-
-Helmet para segurança
+Celebrate/Joi para validação de dados
 
 Winston para logging
 
+Helmet para segurança
+
+Rate limiting para proteção contra ataques de força bruta
+
+Ferramentas de Desenvolvimento
+
 ESLint para linting
 
-## Como Executar o Projeto:
+Git para controle de versão
 
-Pré-requisitos:
+Postman para teste de APIs
 
-Node.js (v14 ou superior)
+## Pré-requisitos:
 
-MongoDB Atlas ou local
+-Node.js (versão 14 ou superior)
 
-Git
+-npm ou yarn
 
-## Instalação:
+-MongoDB (local ou remoto)
 
-Clone o repositório:
+## 🔧 Instalação e Execução:
+
+### Clone o repositório:
 
 bash
 
-git clone https://github.com/datasetsprojeto/web_project_news_explorer.git
+git clone 
 
-Entre no diretório do backend:
+[[URL do repositório](https://github.com/datasetsprojeto/web_project_news_explorer.git)]
+
+Entrar no diretório:
 
 bash
 
 cd backend
 
-## Instale as dependências:
+### Instale as dependências:
+
+Altere o .env.example para .env na pasta do backend com as seguintes variáveis:
+
+.env
+
+//Application
+
+NODE_ENV=development
+PORT=3001
+
+//Database
+
+DB_URL=mongodb://localhost:27017/newsdb
+
+//JWT
+
+JWT_SECRET=your-super-secret-jwt-key-here
+
+//CORS
+
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+
+### ️️⚠️ Notas para o Backend:
+
+Altere DB_URL conforme sua configuração do MongoDB
+
+DEFINA UM SEGREDO JWT REAL - não use o valor exemplo em produção
+
+Ajuste ALLOWED_ORIGINS para incluir URLs do seu frontend
 
 bash
 
 npm install
 
-Configure as variáveis de ambiente:
+Execute em modo de desenvolvimento:
 
 bash
 
-cp .env.example .env
+npm start
 
-Edite o arquivo .env com suas configurações
+### Entrar no diretório:
 
-Execute em modo desenvolvimento:
+bash
+
+cd frontend
+
+### Instale as dependências:
+
+Altere o .env.example para .env na pasta do frontend:
+
+env
+
+VITE_API_BASE_URL=http://localhost:3001
+
+VITE_NEWS_API_KEY=sua_chave_real_da_api_de_noticias
+
+### ⚠️ Notas para o Frontend:
+
+A VITE_NEWS_API_KEY fornecida é apenas um exemplo - obtenha uma chave real em NewsAPI.org
+
+Se o backend estiver em outra porta, atualize VITE_API_BASE_URL
+
+bash
+
+npm install
+
+Execute em modo de desenvolvimento:
 
 bash
 
 npm run dev
 
-Execute em modo produção:
+# ✅ Etapas do Projeto
 
-bash
+## Etapa 1: Front-end (Marcação e JSX + API de terceiros)
 
-npm run start
+### *Critérios Implementados
 
-## Endpoints da API:
+#### Marcação e JSX:
 
-POST /signup - Registro de usuário
+Layout responsivo sem scroll horizontal a partir de 320px.
+Navegação funcional entre páginas e links externos.
+Nomenclatura BEM para classes CSS.
+HTML semântico com tags apropriadas.
+Uso de Flexbox/Grid para layout.
+Projeto criado com Create React App.
+Componentes modais com funcionalidade de abrir/fechar.
 
-POST /signin - Login de usuário
+#### React e API:
 
-GET /users/me - Obter informações do usuário
+Hooks usados corretamente (fora de condicionais/loops).
+Requisições API com Fetch em arquivo separado.
+Preloader durante requisições.
+Exibição de mensagem "Nada encontrado" quando apropriado.
+Paginação de resultados (3 cards por vez).
 
-GET /articles - Listar artigos salvos
+#### Boas Práticas:
 
-POST /articles - Criar artigo
+Fontes conectadas via @font-face.
+Ícones em SVG.
+Estados de foco para elementos interativos.
+Placeholders e validação de formulários.
+Sem uso de reset.css.
+Tratamento de erros da API.
+Constantes em arquivo separado.
 
-DELETE /articles/:articleId - Excluir artigo
+## Etapa 2: Back-End
 
-## Critérios Atendidos:
+### *Critérios Implementados
 
-✅ Estrutura de arquivos completa com ESLint configurado
+#### Infraestrutura:
 
-✅ Scripts de start e dev funcionais
+Arquivos de configuração (package.json, .eslintrc, .gitignore) corretos.
+Scripts para iniciar o servidor (dev e start).
+Linting sem erros.
 
-✅ Todas as rotas implementadas e protegidas
+#### Rotas:
 
-✅ Validação de dados nas requisições
+GET /users/me (retorna informações do usuário)
+POST /signup (cria usuário)
+POST /signin (login, retorna JWT)
+GET /articles (retorna artigos salvos do usuário)
+POST /articles (salva um artigo)
+DELETE /articles/articleId (exclui um artigo)
 
-✅ Tratamento de erros com códigos de status apropriados
+#### Segurança:
 
-✅ Senhas armazenadas com hash
+Autenticação via JWT.
+Proteção de rotas (exceto signin/signup).
+Hash de senhas (bcrypt).
+Validação de dados (celebrate/joi).
 
-✅ Variáveis de ambiente para configurações sensíveis
+#### Tratamento de Erros:
 
-✅ Logs de requisições e erros
+Códigos de status HTTP apropriados.
+Mensagens de erro descritivas.
+Manipulador centralizado de erros.
 
-✅ Rate limiting implementado
+#### Boas Práticas:
 
-✅ API deployed em produção
+Logs de requisições e erros.
+Variáveis de ambiente para dados sensíveis.
+Arquivos de configuração separados.
 
-## Próximas Etapas:
+## Etapa 3: Integração Front-end e Back-end (Autorização com React)
 
-Integração front-end com back-end
+### *Critérios Implementados
 
-Implementação de testes automatizados
+#### Funcionalidades:
 
-Otimização de performance
+Registro e login com redirecionamento.
+Proteção de rotas no front-end (ProtectedRoute).
+Persistência de login com localStorage e JWT.
+Logout com remoção do token.
+Salvar e excluir artigos.
+Página de artigos salvos com contagem e palavras-chave.
+Gerenciamento de Estado:
+Context API para dados do usuário.
+Atualização de estado global upon login/logout.
 
-Documentação completa com Swagger
+#### Requisições Assíncronas:
 
-## Autor:
+Centralização das chamadas API.
+Tratamento de erros e loading states.
+
+## Boas Práticas:
+
+Código limpo e legível.
+Componentes reutilizáveis.
+Nomenclatura consistente (camelCase, substantivos para componentes).
+Hooks customizados com prefixo "use".
+
+🌐 Deploy
+Front-end
+O front-end está implantado e acessível em: [URL de produção do front-end]
+
+Back-end
+O back-end está implantado e acessível em: [URL de produção do back-end]
+
+## 📝 Próximas Melhorias
+Testes unitários e de integração.
+PWA (Progressive Web App) capabilities.
+Melhorias de acessibilidade.
+Internacionalização (i18n).
+
+## 👨‍💻 Desenvolvido por:
 
 Renato Soares Pereira
+
+Este projeto foi desenvolvido como parte do programa de formação em desenvolvimento web da TripleTen.
