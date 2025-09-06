@@ -4,6 +4,13 @@
 
 O News Explorer é uma aplicação full-stack que permite aos usuários buscar notícias através de uma API externa, salvar artigos e acessá-los posteriormente. O projeto foi desenvolvido em três etapas, cada uma com foco em uma parte específica do desenvolvimento.
 
+🌐 Deploy
+Front-end
+O front-end está implantado e acessível em: [http://news-explorer-full.strangled.net]
+
+Back-end
+O back-end está implantado e acessível em: [http://api.news-explorer-full.strangled.net)]
+
 ## 🚀 Funcionalidades Gerais:
 
 Busca de Notícias: Integração com API externa para pesquisa e exibição de notícias.
@@ -266,13 +273,6 @@ Código limpo e legível.
 Componentes reutilizáveis.
 Nomenclatura consistente (camelCase, substantivos para componentes).
 Hooks customizados com prefixo "use".
-
-🌐 Deploy
-Front-end
-O front-end está implantado e acessível em: [http://news-explorer-full.strangled.net]
-
-Back-end
-O back-end está implantado e acessível em: [http://api.news-explorer-full.strangled.net)]
 
 ## 📝 Próximas Melhorias
 Testes unitários e de integração.
